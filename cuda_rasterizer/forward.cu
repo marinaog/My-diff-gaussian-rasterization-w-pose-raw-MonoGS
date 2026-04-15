@@ -351,7 +351,7 @@ renderCUDA(
 			// and its exponential falloff from mean.
 			// Avoid numerical instabilities (see paper appendix). 
 			float alpha = min(0.99f, con_o.w * exp(power));
-			if (alpha < 1.0f / 255.0f) {
+			if (alpha < 1.0f / 65535.0f) {
 				continue;
 			}
 			float test_T = T * (1 - alpha);

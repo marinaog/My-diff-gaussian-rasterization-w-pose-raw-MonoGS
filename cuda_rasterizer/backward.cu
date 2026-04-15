@@ -686,7 +686,7 @@ renderCUDA(
 
 			const float G = exp(power);
 			const float alpha = min(0.99f, con_o.w * G);
-			skip |= alpha < 1.0f / 255.0f;
+			skip |= alpha < 1.0f / 65535.0f;
 
 			if (skip) {
 				atomicAdd(&skip_counter, 1);
