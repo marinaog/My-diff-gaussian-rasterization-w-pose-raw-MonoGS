@@ -579,7 +579,8 @@ renderCUDA(
 	float4* __restrict__ dL_dconic2D,
 	float* __restrict__ dL_dopacity,
 	float* __restrict__ dL_dcolors,
-	float* __restrict__ dL_ddepths)
+	float* __restrict__ dL_ddepths,
+	float alpha_threshold)
 {
 	// We rasterize again. Compute necessary block info.
 	auto block = cg::this_thread_block();
@@ -686,7 +687,7 @@ renderCUDA(
 
 			const float G = exp(power);
 			const float alpha = min(0.99f, con_o.w * G);
-			skip |= alpha < 1.0f / 65535.0f;
+			skip |= alpha < alpha_threshold;
 
 			if (skip) {
 				atomicAdd(&skip_counter, 1);
@@ -877,7 +878,8 @@ void BACKWARD::render(
 	float4* dL_dconic2D,
 	float* dL_dopacity,
 	float* dL_dcolors,
-	float* dL_ddepths)
+	float* dL_ddepths,
+	float alpha_threshold)
 {
 	renderCUDA<NUM_CHANNELS> << <grid, block >> >(
 		ranges,
@@ -896,6 +898,7 @@ void BACKWARD::render(
 		dL_dconic2D,
 		dL_dopacity,
 		dL_dcolors,
-		dL_ddepths
+		dL_ddepths,
+		alpha_threshold
 	);
 }

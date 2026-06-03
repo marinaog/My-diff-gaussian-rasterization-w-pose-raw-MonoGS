@@ -53,7 +53,8 @@ namespace CudaRasterizer
 			float* out_opacity,
 			int* radii = nullptr,
 			int* n_touched = nullptr,
-			bool debug = false);
+			bool debug = false,
+			float alpha_threshold = 1.0f / 255.0f);
 
 		static void backward(
 			const int P, int D, int M, int R,
@@ -88,7 +89,8 @@ namespace CudaRasterizer
 			float* dL_dscale,
 			float* dL_drot,
 			float* dL_dtau,
-			bool debug);
+			bool debug,
+			float alpha_threshold = 1.0f / 255.0f);
 	};
 };
 

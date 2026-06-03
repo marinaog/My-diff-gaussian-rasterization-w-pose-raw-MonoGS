@@ -274,9 +274,10 @@ renderCUDA(
 	const float* __restrict__ bg_color,
 	float* __restrict__ out_color,
 	const float* __restrict__ depth,
-	float* __restrict__ out_depth, 
+	float* __restrict__ out_depth,
 	float* __restrict__ out_opacity,
-	int * __restrict__ n_touched)
+	int * __restrict__ n_touched,
+	float alpha_threshold)
 {
 	// Identify current tile and associated min/max pixel range.
 	auto block = cg::this_thread_block();
@@ -351,7 +352,7 @@ renderCUDA(
 			// and its exponential falloff from mean.
 			// Avoid numerical instabilities (see paper appendix). 
 			float alpha = min(0.99f, con_o.w * exp(power));
-			if (alpha < 1.0f / 65535.0f) {
+			if (alpha < alpha_threshold) {
 				continue;
 			}
 			float test_T = T * (1 - alpha);
@@ -404,9 +405,10 @@ void FORWARD::render(
 	const float* bg_color,
 	float* out_color,
 	const float* depth,
-	float* out_depth, 
+	float* out_depth,
 	float* out_opacity,
-	int* n_touched)
+	int* n_touched,
+	float alpha_threshold)
 {
 	renderCUDA<NUM_CHANNELS> << <grid, block >> > (
 		ranges,
@@ -422,7 +424,8 @@ void FORWARD::render(
 		depth,
 		out_depth,
 		out_opacity,
-		n_touched);
+		n_touched,
+		alpha_threshold);
 }
 
 void FORWARD::preprocess(int P, int D, int M,

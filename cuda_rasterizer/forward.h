@@ -63,7 +63,8 @@ namespace FORWARD
 		const float* depth,
 	    float* out_depth,
 		float* out_opacity,
-		int* n_touched);
+		int* n_touched,
+		float alpha_threshold);
 }
 
 
